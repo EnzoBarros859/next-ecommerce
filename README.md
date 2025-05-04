@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Jewelry E-Commerce Store
+
+A modern, responsive e-commerce platform for jewelry products built with Next.js, TypeScript, and Tailwind CSS.
+
+## Features
+
+### Product Management
+- **Product Listing**
+  - Grid and List view options
+  - Responsive product cards
+  - Category-based filtering
+  - Price range filtering
+  - Rating-based filtering
+  - Sorting options (Featured, Price, Rating)
+  - Pagination with customizable items per page
+
+### Product Details
+- Detailed product information
+- Image gallery
+- Quantity selector
+- Add to cart functionality
+- Wishlist toggle
+- Similar products recommendations
+- Product ratings and reviews
+
+### Shopping Cart
+- Add/remove items
+- Quantity adjustment
+- Real-time price calculation
+- Order summary
+- Similar products recommendations
+- Proceed to checkout option
+
+### User Interface
+- Modern, clean design
+- Responsive layout for all devices
+- Intuitive navigation
+- Beautiful 404 page
+- Consistent styling throughout
+- Smooth transitions and animations
+
+### Technical Features
+- TypeScript for type safety
+- Next.js for server-side rendering
+- Tailwind CSS for styling
+- Context API for state management
+- Responsive design
+- Optimized performance
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js (v14 or later)
+- npm or yarn
 
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/jewelry-store.git
+cd jewelry-store
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── cart/              # Cart page
+│   ├── products/          # Products pages
+│   │   ├── [id]/         # Product detail pages
+│   │   └── page.tsx      # Products listing page
+│   └── not-found.tsx     # 404 page
+├── components/            # React components
+│   ├── client/           # Client-side components
+│   │   ├── Header.tsx    # Navigation header
+│   │   ├── Footer.tsx    # Page footer
+│   │   ├── ProductCard.tsx # Product card component
+│   │   └── ProductCardList.tsx # List view product card
+│   └── ui/               # UI components
+├── context/              # React context
+│   └── CartContext.tsx   # Shopping cart context
+└── data/                 # Static data
+    └── products.ts       # Product data
+```
 
-## Learn More
+## Technologies Used
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend Framework**: Next.js
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **State Management**: React Context API
+- **Routing**: Next.js App Router
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Lucide React](https://lucide.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
