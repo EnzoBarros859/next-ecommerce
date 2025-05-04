@@ -1,42 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ShoppingCart, Heart, Star, ChevronLeft } from 'lucide-react';
-import { products } from '@/data/products';
+import { ShoppingCart, Heart, Star, ChevronLeft, Share2, Truck, Shield, RefreshCw } from 'lucide-react';
 import Header from '@/components/client/Header';
 import Footer from '@/components/client/Footer';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import ProductCard from '@/components/client/ProductCard';
+import { Product } from '@/types/product';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const product = products.find(p => p.id === Number(id));
-  const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
-  // Get similar products (products from the same category)
-  const similarProducts = products
-    .filter(p => 
-      p.category === product?.category && 
-      p.id !== product?.id
-    )
-    .slice(0, 4); // Show up to 4 similar products
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/products/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch product');
+        }
+        const data = await response.json();
+        setProduct(data);
+      } catch (err) {
+        setError('Failed to load product');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!product) {
+    if (id) {
+      loadProduct();
+    }
+  }, [id]);
+
+  if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-grow bg-blue-100 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Product Not Found</h1>
-            <Link href="/products" className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
-              <ChevronLeft className="h-5 w-5 mr-1" />
-              Back to Products
-            </Link>
+        <main className="flex-grow bg-gray-50">
+          <div className="container mx-auto px-4 py-12">
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
           </div>
         </main>
         <Footer />
@@ -44,153 +58,164 @@ export default function ProductDetailPage() {
     );
   }
 
-  const handleAddToCart = () => {
-    addToCart(product, quantity);
-    router.push('/cart');
-  };
-
-  const toggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-  };
+  if (error || !product) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow bg-gray-50">
+          <div className="container mx-auto px-4 py-12">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Error</h2>
+              <p className="text-gray-600">{error || 'Product not found'}</p>
+              <Link
+                href="/products"
+                className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <ChevronLeft className="h-5 w-5 mr-1" />
+                Back to Products
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow bg-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Link href="/products" className="inline-flex items-center text-gray-600 hover:text-blue-600 mb-6">
-            <ChevronLeft className="h-5 w-5 mr-1" />
-            Back to Products
-          </Link>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Product Image */}
-            <div className="bg-white rounded-lg shadow-sm p-4">
-              <div className="relative aspect-square">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-                <button
-                  onClick={toggleWishlist}
-                  className={`absolute top-4 right-4 p-2 rounded-full shadow-md transition-colors ${
-                    isWishlisted
-                      ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                      : 'bg-white text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  <Heart className="h-6 w-6" fill={isWishlisted ? 'currentColor' : 'none'} />
-                </button>
-              </div>
+      <main className="flex-grow bg-gray-50">
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-7xl mx-auto">
+            {/* Breadcrumb */}
+            <div className="mb-8">
+              <Link
+                href="/products"
+                className="inline-flex items-center text-gray-500 hover:text-gray-700"
+              >
+                <ChevronLeft className="h-5 w-5 mr-1" />
+                Back to Products
+              </Link>
             </div>
 
-            {/* Product Details */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="space-y-4">
-                <div>
-                  <span className="text-sm text-blue-600 font-medium">
-                    {product.category}
-                  </span>
-                  <h1 className="text-3xl font-bold text-gray-900 mt-2">
-                    {product.title}
-                  </h1>
-                  <div className="flex items-center mt-2">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-5 w-5 ${
-                            i < Math.floor(product.rating.rate)
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500 ml-2">
-                      ({product.rating.count} reviews)
-                    </span>
+            {/* Product Content */}
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+                {/* Image Section */}
+                <div className="relative">
+                  <div className="aspect-square rounded-xl overflow-hidden bg-gray-100">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
                   </div>
+                  <button
+                    onClick={() => setIsWishlisted(!isWishlisted)}
+                    className={`absolute top-4 right-4 p-2 rounded-full shadow-md transition-colors ${
+                      isWishlisted
+                        ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Heart className="h-6 w-6" fill={isWishlisted ? 'currentColor' : 'none'} />
+                  </button>
                 </div>
 
-                <div className="text-3xl font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
-                </div>
+                {/* Product Info */}
+                <div className="space-y-6">
+                  <div>
+                    <span className="text-sm font-medium text-blue-600">{product.category}</span>
+                    <h1 className="text-3xl font-bold text-gray-900 mt-2">{product.name}</h1>
+                    <div className="flex items-center mt-2">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-5 w-5 ${
+                              i < Math.floor(product.rating.rate)
+                                ? 'text-yellow-400 fill-yellow-400'
+                                : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="ml-2 text-sm text-gray-500">
+                        ({product.rating.count} reviews)
+                      </span>
+                    </div>
+                  </div>
 
-                <p className="text-gray-600">
-                  {product.description}
-                </p>
+                  <div className="text-3xl font-bold text-gray-900">
+                    ${product.price.toFixed(2)}
+                  </div>
 
-                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-gray-600 leading-relaxed">{product.description}</p>
+
+                  {/* Quantity Selector */}
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center border border-gray-200 rounded-lg">
+                    <span className="text-sm font-medium text-gray-700">Quantity:</span>
+                    <div className="flex items-center border rounded-lg">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="px-3 py-2 text-gray-600 hover:bg-gray-100"
+                        className="px-3 py-2 text-gray-600 hover:text-gray-900"
                       >
                         -
                       </button>
-                      <span className="px-4 py-2 border-x border-gray-200 text-gray-600">
-                        {quantity}
-                      </span>
+                      <span className="px-3 py-2 text-gray-900">{quantity}</span>
                       <button
                         onClick={() => setQuantity(quantity + 1)}
-                        className="px-3 py-2 text-gray-600 hover:bg-gray-100"
+                        className="px-3 py-2 text-gray-600 hover:text-gray-900"
                       >
                         +
                       </button>
                     </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <button
-                      onClick={handleAddToCart}
+                      onClick={() => addToCart(product, quantity)}
                       className="flex-1 flex items-center justify-center bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                       <ShoppingCart className="h-5 w-5 mr-2" />
                       Add to Cart
                     </button>
+                    <button className="flex-1 flex items-center justify-center bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors">
+                      <Share2 className="h-5 w-5 mr-2" />
+                      Share
+                    </button>
                   </div>
-                </div>
 
-                <div className="border-t border-gray-200 pt-4">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                    Product Details
-                  </h2>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex justify-between">
-                      <span>Category</span>
-                      <span className="text-gray-900">{product.category}</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Rating</span>
-                      <span className="text-gray-900">{product.rating.rate} / 5</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Reviews</span>
-                      <span className="text-gray-900">{product.rating.count}</span>
-                    </li>
-                  </ul>
+                  {/* Features */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t">
+                    <div className="flex items-center space-x-3">
+                      <Truck className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <h4 className="font-medium text-gray-900">Free Shipping</h4>
+                        <p className="text-sm text-gray-500">On orders over $100</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Shield className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <h4 className="font-medium text-gray-900">Secure Payment</h4>
+                        <p className="text-sm text-gray-500">100% secure payment</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <RefreshCw className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <h4 className="font-medium text-gray-900">Easy Returns</h4>
+                        <p className="text-sm text-gray-500">30-day return policy</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Similar Products */}
-          {similarProducts.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {similarProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    showCategory={true}
-                    showRating={true}
-                    showWishlist={true}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </main>
       <Footer />

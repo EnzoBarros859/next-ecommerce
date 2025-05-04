@@ -1,13 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Layout from '@/components/client/Layout'
-import { products } from '@/data/products'
 import { ArrowRight, Star, Truck, Shield, RefreshCw } from 'lucide-react'
 import ProductCard from '@/components/client/ProductCard'
-
+import { products } from '@/data/products'
 export default function Home() {
   const featuredProducts = products.slice(0, 4)
-
   return (
     <Layout>
       {/* Hero Section */}

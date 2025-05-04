@@ -36,7 +36,7 @@ export default function ProductCard({
       <div className="relative h-64">
         <Image
           src={product.image}
-          alt={product.title}
+          alt={product.description}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -68,7 +68,7 @@ export default function ProductCard({
             </div>
           )}
           <h2 className="text-xl font-semibold mb-3 line-clamp-2 text-gray-800 group-hover:text-blue-600 transition-colors">
-            {product.title}
+            {product.description}
           </h2>
         </div>
         <div className="flex flex-col justify-end">

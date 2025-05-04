@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Header from '@/components/client/Header';
 import Footer from '@/components/client/Footer';
 import { useCart } from '@/context/CartContext';
-import { products } from '@/data/products';
 import ProductCard from '@/components/client/ProductCard';
 
 export default function CartPage() {
@@ -16,14 +15,6 @@ export default function CartPage() {
   // Get unique categories from cart items
   const cartCategories = Array.from(new Set(items.map(item => item.category)));
   
-  // Get similar products (products from the same categories as cart items)
-  const similarProducts = products
-    .filter(product => 
-      cartCategories.includes(product.category) && 
-      !items.some(item => item.id === product.id)
-    )
-    .slice(0, 4); // Show up to 4 similar products
-
   const handleQuantityChange = (productId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
     setIsUpdating(productId);
@@ -160,23 +151,7 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* Similar Products */}
-          {similarProducts.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {similarProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    showCategory={true}
-                    showRating={true}
-                    showWishlist={true}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          
         </div>
       </main>
       <Footer />

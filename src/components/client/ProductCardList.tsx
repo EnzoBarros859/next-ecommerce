@@ -29,7 +29,7 @@ export default function ProductCardList({
       <div className="w-full sm:w-48 h-48 relative">
         <img
           src={product.image}
-          alt={product.title}
+          alt={product.description}
           className="w-full h-full object-cover rounded-lg"
         />
         {showWishlist && (
@@ -54,7 +54,7 @@ export default function ProductCardList({
             </span>
           )}
           <h3 className="text-lg font-semibold text-gray-900 mt-1">
-            {product.title}
+            {product.description}
           </h3>
           <p className="text-gray-600 mt-2 line-clamp-2">
             {product.description}
