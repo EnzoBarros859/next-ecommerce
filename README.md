@@ -1,6 +1,7 @@
 # Jewelry E-Commerce Store
 
 A modern, responsive e-commerce platform for jewelry products built with Next.js, TypeScript, and Tailwind CSS.
+![image](https://github.com/user-attachments/assets/f07ebde4-7f5b-4ccd-8465-678e8e4488ad)
 
 ## Features
 
