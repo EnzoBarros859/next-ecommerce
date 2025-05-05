@@ -179,8 +179,15 @@ export default function ProductDetailPage() {
                       onClick={() => addToCart(product, quantity)}
                       className="flex-1 flex items-center justify-center bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      <ShoppingCart className="h-5 w-5 mr-2" />
-                      Add to Cart
+                      
+                      <Link
+                        href="/cart"
+                        className="inline-flex items-center text-white-500"
+                      >
+                        <ShoppingCart className="h-5 w-5 mr-2" />
+                        Add to Cart
+                      </Link>
+                      
                     </button>
                     <button className="flex-1 flex items-center justify-center bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors">
                       <Share2 className="h-5 w-5 mr-2" />
