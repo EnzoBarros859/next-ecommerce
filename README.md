@@ -3,51 +3,6 @@
 A modern, responsive e-commerce platform for jewelry products built with Next.js, TypeScript, and Tailwind CSS.
 ![image](https://github.com/user-attachments/assets/27ac2b69-4d2f-4188-8af1-c46a48969615)
 
-## Features
-
-### Product Management
-- **Product Listing**
-  - Grid and List view options
-  - Responsive product cards
-  - Category-based filtering
-  - Price range filtering
-  - Rating-based filtering
-  - Sorting options (Featured, Price, Rating)
-  - Pagination with customizable items per page
-
-### Product Details
-- Detailed product information
-- Image gallery
-- Quantity selector
-- Add to cart functionality
-- Wishlist toggle
-- Similar products recommendations
-- Product ratings and reviews
-
-### Shopping Cart
-- Add/remove items
-- Quantity adjustment
-- Real-time price calculation
-- Order summary
-- Similar products recommendations
-- Proceed to checkout option
-
-### User Interface
-- Modern, clean design
-- Responsive layout for all devices
-- Intuitive navigation
-- Beautiful 404 page
-- Consistent styling throughout
-- Smooth transitions and animations
-
-### Technical Features
-- TypeScript for type safety
-- Next.js for server-side rendering
-- Tailwind CSS for styling
-- Context API for state management
-- Responsive design
-- Optimized performance
-
 ## Getting Started
 
 ### Prerequisites
