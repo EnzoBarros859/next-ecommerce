@@ -1,6 +1,7 @@
 # E-commerce Store
 
 A modern e-commerce platform built with Next.js, TypeScript, and Stripe integration.
+![image](https://github.com/user-attachments/assets/5175c2c9-4cbe-4a6b-ad74-32ae1a3f1411)
 
 ## Features
 
