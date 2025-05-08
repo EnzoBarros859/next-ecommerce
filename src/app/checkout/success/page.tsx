@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import Header from '@/components/client/Header';
 import Footer from '@/components/client/Footer';
 import { useCart } from '@/context/CartContext';
+import Toast, { ToastType } from '@/components/client/Toast';
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams();
@@ -14,6 +15,12 @@ export default function CheckoutSuccessPage() {
   const { clearCart } = useCart();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: ToastType;
+  } | null>(null);
+
+  const hasShownToast = useRef(false);
 
   useEffect(() => {
     const handleSuccess = async () => {
@@ -23,19 +30,45 @@ export default function CheckoutSuccessPage() {
         return;
       }
 
+      if (hasShownToast.current) return;
+
       try {
         // Clear the cart after successful payment
         clearCart();
-        setLoading(false);
+        
+        // Check session status
+        const res = await fetch(`/api/get-checkout-session?session_id=${sessionId}`);
+        const data = await res.json();
+        console.log(data);
+        if (data.status === 500) {
+          setError('Failed to process order');
+        } else if (data.status === 400) {
+          // Payment is still processing
+          setToast({
+            message: data.message,
+            type: 'warning'
+          });
+          console.log(data.message);
+        } else {
+          console.log(data.message);
+          // Payment successful
+          setToast({
+            message: data.message,
+            type: 'success'
+          });
+        }
+        hasShownToast.current = true;
+
       } catch (err) {
-        console.error('Error clearing cart:', err);
+        console.error('Error processing order:', err);
         setError('Failed to process order');
+        
+      } finally {
         setLoading(false);
       }
     };
-
     handleSuccess();
-  }, [sessionId]); // Only depend on sessionId
+  }, [sessionId]);
 
   if (loading) {
     return (
@@ -115,6 +148,13 @@ export default function CheckoutSuccessPage() {
         </div>
       </main>
       <Footer />
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 } 

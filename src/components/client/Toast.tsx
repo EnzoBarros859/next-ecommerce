@@ -48,8 +48,8 @@ export default function Toast({ message, type, onClose, duration = 5000 }: Toast
 
   return (
     <div
-      className={`fixed bottom-4 right-4 z-50 transform transition-all duration-300 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+      className={`fixed top-4 right-4 z-50 transform transition-all duration-300 ${
+        isVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
       }`}
     >
       <div
