@@ -15,11 +15,11 @@ if (!webhookSecret) {
 }
 
 // Disable body parsing, need raw body for Stripe webhook
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 export async function POST(request: Request) {
   try {
