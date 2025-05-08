@@ -36,7 +36,7 @@ export default function CartPage() {
       }
       console.log(items);
       // Create checkout session
-      const response = await fetch('http://localhost:3000/api/checkout', {
+      const response = await fetch('api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
