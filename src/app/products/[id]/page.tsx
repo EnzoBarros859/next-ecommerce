@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { ShoppingCart, Heart, Star, ChevronLeft, Share2, Truck, Shield, RefreshCw } from 'lucide-react';
 import Header from '@/components/client/Header';
 import Footer from '@/components/client/Footer';
@@ -11,7 +11,6 @@ import { Product } from '@/types/product';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
-  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

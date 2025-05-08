@@ -6,11 +6,14 @@ import Link from 'next/link';
 import Header from '@/components/client/Header';
 import Footer from '@/components/client/Footer';
 import { useCart } from '@/context/CartContext';
-import ProductCard from '@/components/client/ProductCard';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, totalItems, totalPrice } = useCart();
   const [isUpdating, setIsUpdating] = useState<number | null>(null);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   // Get unique categories from cart items
   const cartCategories = Array.from(new Set(items.map(item => item.category)));
@@ -20,6 +23,41 @@ export default function CartPage() {
     setIsUpdating(productId);
     updateQuantity(productId, newQuantity);
     setTimeout(() => setIsUpdating(null), 500);
+  };
+
+  const handleCheckout = async () => {
+    try {
+      
+      setIsCheckingOut(true);
+      const stripe = await stripePromise;
+      
+      if (!stripe) {
+        throw new Error('Stripe failed to initialize');
+      }
+      console.log(items);
+      // Create checkout session
+      const response = await fetch('http://localhost:3000/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items }),
+      });
+
+      const { sessionId } = await response.json();
+
+      // Redirect to Stripe checkout
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    } finally {
+      setIsCheckingOut(false);
+    }
   };
 
   if (items.length === 0) {
@@ -74,7 +112,7 @@ export default function CartPage() {
                       className="w-full h-full object-cover rounded-lg"
                     />
                   </div>
-                  <div className="flex-1 flex flex-col justify-between">
+                  <div className="flex-grow">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
                         {item.title}
@@ -91,6 +129,7 @@ export default function CartPage() {
                         <button
                           onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                           className="px-3 py-2 text-gray-600 hover:bg-gray-100"
+                          disabled={isUpdating === item.id}
                         >
                           -
                         </button>
@@ -100,6 +139,7 @@ export default function CartPage() {
                         <button
                           onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                           className="px-3 py-2 text-gray-600 hover:bg-gray-100"
+                          disabled={isUpdating === item.id}
                         >
                           +
                         </button>
@@ -137,8 +177,12 @@ export default function CartPage() {
                       <span>${totalPrice.toFixed(2)}</span>
                     </div>
                   </div>
-                  <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
-                    Proceed to Checkout
+                  <button
+                    onClick={handleCheckout}
+                    disabled={isCheckingOut}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  >
+                    {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
                   </button>
                   <Link
                     href="/products"
@@ -150,8 +194,6 @@ export default function CartPage() {
               </div>
             </div>
           </div>
-
-          
         </div>
       </main>
       <Footer />

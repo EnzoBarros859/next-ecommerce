@@ -14,6 +14,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "lucide-react": "^0.507.0",
     "next": "14.0.4",
+    "raw-body": "^3.0.0",
     "react": "^18",
     "react-dom": "^18",
     "stripe": "^18.1.0",
